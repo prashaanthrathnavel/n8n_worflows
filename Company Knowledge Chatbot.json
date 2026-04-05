@@ -1,0 +1,189 @@
+{
+  "name": "Company Knowledge Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -416,
+        -176
+      ],
+      "id": "6f6115f4-a90e-468f-8b82-3b065f3068a1",
+      "name": "When chat message received",
+      "webhookId": "5d6ac641-47bb-46b7-b1a3-5c7ed6209a56"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are a helpful company knowledge assistant.\nAnswer questions ONLY based on the documents \nprovided in your knowledge base.\nIf the answer is not in the documents, say:\n\"I don't have information about that in my \nknowledge base.\"\nDo not make up answers."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -208,
+        -176
+      ],
+      "id": "7011d194-f69a-417a-a465-a7e2fbe9fce7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        32
+      ],
+      "id": "8eb3d80f-d488-4754-bcb9-71afee718956",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QfLVQLXvCuXKtCzf",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -144,
+        32
+      ],
+      "id": "114055a0-6518-4994-ad10-c6aeb5cbb3fd",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "=Use this tool to search and retrieve information \nfrom the company knowledge base documents including \nLeave Policy, HR Policy, Employee Benefits Policy \nand IT Policy. Use this tool whenever the user asks \nany question related to company rules, policies, \nleave, salary, benefits, working hours, resignation, \ntraining, travel, IT security or any HR related topics.",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n-testdemo",
+          "mode": "list",
+          "cachedResultName": "n8n-testdemo"
+        },
+        "topK": 10,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        64,
+        16
+      ],
+      "id": "2ff8df23-0f0d-4922-889b-539da031406a",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "4oZ9Fkd4xNaGDo18",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "=models/gemini-embedding-2-preview"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        96,
+        192
+      ],
+      "id": "7d244979-b3e7-4293-8b6a-0dfd5dfa7f07",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "IFfbgreFcq5UhOjQ",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "a34645d3-d3cb-4aeb-91eb-efdc389da6a2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "76ce6b32161b2c2c4eb82a1c152a92c49942def96183088d14e95dc177fa21ad"
+  },
+  "id": "qnM3fwbAIZGCEVXh",
+  "tags": []
+}

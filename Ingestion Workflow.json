@@ -1,0 +1,341 @@
+{
+  "name": "Ingestion Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        -224
+      ],
+      "id": "ff7bfa52-1387-4c0f-847e-ec044b16d52c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1j3xRWCbwEiuXFLx4eWuiIgqCbS6qsz2-",
+          "mode": "list",
+          "cachedResultName": "Leave_Policy.txt",
+          "cachedResultUrl": "https://drive.google.com/file/d/1j3xRWCbwEiuXFLx4eWuiIgqCbS6qsz2-/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -864,
+        -432
+      ],
+      "id": "dd8d65d0-75fd-4d8c-95b9-8aed76f18398",
+      "name": "Leave_Policy",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GRgLfx0nhsZtkseQ",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1bDjn2zH7rw_KAbPLj5tH9R-b3xg4JseI",
+          "mode": "list",
+          "cachedResultName": "IT_Policy.txt",
+          "cachedResultUrl": "https://drive.google.com/file/d/1bDjn2zH7rw_KAbPLj5tH9R-b3xg4JseI/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -864,
+        -256
+      ],
+      "id": "60f2fb40-9442-4065-937d-842468ff9bb9",
+      "name": "IT_Policy",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GRgLfx0nhsZtkseQ",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1EHU8xzFU-74tk3uvxK1If_bSQlggIyUy",
+          "mode": "list",
+          "cachedResultName": "HR_Policy.txt",
+          "cachedResultUrl": "https://drive.google.com/file/d/1EHU8xzFU-74tk3uvxK1If_bSQlggIyUy/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -864,
+        -64
+      ],
+      "id": "0083a7fb-5e41-4a5a-b2dd-eaf08953b6e7",
+      "name": "HR_Policy",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GRgLfx0nhsZtkseQ",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1rQQAlvz0fjii3zX2t-puSKBOSj9HBsCZ",
+          "mode": "list",
+          "cachedResultName": "Benefits_Policy.txt",
+          "cachedResultUrl": "https://drive.google.com/file/d/1rQQAlvz0fjii3zX2t-puSKBOSj9HBsCZ/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -864,
+        128
+      ],
+      "id": "57b1f8d5-bb3f-4656-bb83-d02c6b3053f5",
+      "name": "Benefit_Policy",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GRgLfx0nhsZtkseQ",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -464,
+        -272
+      ],
+      "id": "d53ec913-cd3b-4ee0-a9a3-25781f92777d",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "modelName": "=models/gemini-embedding-2-preview"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        -32
+      ],
+      "id": "cbaf8249-9d1b-4893-9dc3-295f81a328ca",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OAFJD54N2WjRsZOQ",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 50,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        176
+      ],
+      "id": "059ad941-5364-46c7-8d1b-d86c3278b158",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n-testdemo",
+          "mode": "list",
+          "cachedResultName": "n8n-testdemo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        -240
+      ],
+      "id": "817d8c54-eb5b-46a7-aa4c-4e6238985250",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "4oZ9Fkd4xNaGDo18",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -128,
+        -32
+      ],
+      "id": "6f0f0663-127e-44ab-b13e-69c2326e44be",
+      "name": "Default Data Loader"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Leave_Policy",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IT_Policy",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HR_Policy",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Benefit_Policy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leave_Policy": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IT_Policy": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HR_Policy": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Benefit_Policy": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "723ba189-51da-4f09-942b-1eb749d0dbfe",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "76ce6b32161b2c2c4eb82a1c152a92c49942def96183088d14e95dc177fa21ad"
+  },
+  "id": "Zik6Fhx772brBgnj",
+  "tags": []
+}
